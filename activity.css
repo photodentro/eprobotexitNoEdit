@@ -11,7 +11,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   -ms-user-select: none;
   user-select: none;
   overflow: hidden;
-/*  border-style: dotted;
+  /*border-style: dotted;
   border-width:1px;
   border-color: red;*/
 }
@@ -222,17 +222,26 @@ body {
 .cellHighlight{
   filter: brightness(180%);
   border: 2px solid yellow;
-  
   transform: scale(1.1);
 }
 #stage{
-  background-color:white;
-  position:absolute;
+  position: absolute;
   display:inline-block;
   margin-bottom: 1.5em;
   margin-right:0.5em;
   height: 30.1em;
   width:43em;
+}
+#stagebkg{
+  background-color:white;
+  position:absolute;
+  display:inline-block;
+  margin-bottom: 1.5em;
+  margin-right:6.5em;
+  margin-left:6em;
+  height: 30.1em;
+  width:30.6em;
+
 }
 #mycanvas{
   position:absolute;

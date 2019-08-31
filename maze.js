@@ -1,5 +1,5 @@
-const mazeColumns = 7;
-const mazeRows = 5;
+mazeColumns = 5;
+mazeRows = 5;
 
 
 const NORTH = 1
@@ -139,103 +139,87 @@ function drawMazeonCanvas(){
     ctx = c.getContext("2d");
     ctx.clearRect(0,0,c.width,c.height);
 
-    for (var i=0; i<mazeColumns; i++)
+    for (var i=1; i<mazeColumns-1; i++)
     {
         for (var j=0; j<mazeRows; j++){
             drawSquare(i*42.6,120-j*30,g.maze[getId(i,j)]);
         }
     }
 
+
 }
 
 function newMaze(){
 	level = 0;
 	act.level  = 0;
-    g = null;
-    g = {maze: []};
-    for (var id = 0; id < mazeColumns * mazeRows; ++id) {
-        g.maze[id] = 15;
-    }
-    
-    // Generate g.maze 
-    
-    generateMaze(Math.floor(Math.random() * mazeColumns),
-             Math.floor(Math.random() * mazeRows));
-    
-    // Remove set 
-    for (var id = 0; id < mazeColumns * mazeRows; ++id) {
-        g.maze[id] = g.maze[id] ^ SET
-    }
+    mazeRows = 5;
+    mazeColumns = 5;
+    endY = Math.round(Math.random()*4);
 
-    /*debug
-    g.maze = [3,13,7,5,1,5,9,10,3,5,5,12,11,10,6,12,3,5,5,4,12,3,9,10,3,9,7,9,14,6,4,12,6,5,12];*/
-    
+    do {
+        g = {maze: []};
+        for (var id = 0; id < mazeColumns * mazeRows; ++id) {
+            g.maze[id] = 15;
+        }
+        
+        // Generate g.maze 
+        
+        generateMaze(Math.floor(Math.random() * mazeColumns),
+                 Math.floor(Math.random() * mazeRows));
+        
+        // Remove set 
+        for (var id = 0; id < mazeColumns * mazeRows; ++id) {
+            g.maze[id] = g.maze[id] ^ SET
+        }
+
+        //add entry point in [0,4]
+        g.maze[getId(0,0)] = g.maze[getId(0,0)] ^ WEST;
+        //add exit point in [4,endY]
+        g.maze[getId(4,endY)] = g.maze[getId(4,endY)] ^ EAST;
+
+        /*debug
+        g.maze = [3,13,7,5,1,5,9,10,3,5,5,12,11,10,6,12,3,5,5,4,12,3,9,10,3,9,7,9,14,6,4,12,6,5,12];*/
+        
+        //that's the door x,y in the original
+        endX = 4;
+        solved = false;
+
+        visited = [];
+        for (var id = 0; id < mazeColumns * mazeRows; ++id) {
+           visited[id] = false;
+        }
+        path = [];
+
+        recursiveSolve(0,0);
+        g.positions = [];
+        g.cmds = pathtoCommands(path);
+    } while (g.cmds.length > 25);
+    //convert the 5x5 maze to a 5x7 one
+    mazeRows = 5;
+    mazeColumns = 7;
+    maze5x7 = [];
+    for (var x=0; x<mazeColumns; x++){
+        for (var y=0; y<mazeRows; y++){
+            if (x == 0){
+                maze5x7[getId(x,y)] = 15;
+            }
+            else{
+                if (x==6){
+                    maze5x7[getId(x,y)] = 15;    
+                }
+                else{
+                    maze5x7[getId(x,y)] = g.maze[y*5+x-1];
+                }
+            }
+        }
+    }
+    //entry point
+    maze5x7[getId(0,0)] = maze5x7[getId(0,0)]^EAST;
+    //exit point
+    maze5x7[getId(6,endY)] = maze5x7[getId(6,endY)]^WEST;
+    g.maze = maze5x7.slice();
     drawMazeonCanvas();
-
-    //that's the door x,y in the original
-    endX = 6;
-    endY = 4;
-    solved = false;
-
-    visited = [];
-    for (var id = 0; id < mazeColumns * mazeRows; ++id) {
-       visited[id] = false;
-    }
-    path = [];
-
-    recursiveSolve(0,0);
-    g.positions = [];
-    g.cmds = pathtoCommands(path);
-    switch(level){
-        case 0: pIndex = 2+Math.floor(Math.random()*2); break;
-        case 1: pIndex = 4+Math.floor(Math.random()*3); break;
-        case 2: pIndex = 8+Math.floor(Math.random()*3); break;
-        case 3: pIndex = 12+Math.floor(Math.random()*3); break;
-        case 4: pIndex = 16+Math.floor(Math.random()*3); break;
-        case 5: pIndex = 20+Math.floor(Math.random()*3); break;
-    }
-    if (pIndex > g.positions.length-1){
-        pIndex = g.positions.length-1;
-    }
-    act.exit = [g.positions[pIndex].x,4-g.positions[pIndex].y];
-    ge('exit').style.marginLeft = sformat('{}em',act.exit[0]*6);
-    ge('exit').style.marginTop = sformat('{}em',act.exit[1]*6);
 }
-
-
-function newLevel(level){
-    var pIndex;
-    drawMazeonCanvas();
-    //that's the door x,y in the original
-    endX = 6;
-    endY = 4;
-    solved = false;
-
-    visited = [];
-    for (var id = 0; id < mazeColumns * mazeRows; ++id) {
-       visited[id] = false;
-    }
-    path = [];
-
-    recursiveSolve(0,0);
-    g.positions = [];
-    g.cmds = pathtoCommands(path);
-    switch(level){
-        case 0: pIndex = 2+Math.floor(Math.random()*2); break;
-        case 1: pIndex = 4+Math.floor(Math.random()*3); break;
-        case 2: pIndex = 8+Math.floor(Math.random()*3); break;
-        case 3: pIndex = 12+Math.floor(Math.random()*3); break;
-        case 4: pIndex = 16+Math.floor(Math.random()*3); break;
-        case 5: pIndex = 20+Math.floor(Math.random()*3); break;
-    }
-    if (pIndex > g.positions.length-1){
-        pIndex = g.positions.length-1;
-    }
-    act.exit = [g.positions[pIndex].x,4-g.positions[pIndex].y];
-    ge('exit').style.marginLeft = sformat('{}em',act.exit[0]*6);
-    ge('exit').style.marginTop = sformat('{}em',act.exit[1]*6);
-}
-
 
 
 
@@ -281,7 +265,7 @@ function recursiveSolve(x, y) {
 function pathtoCommands(p){
     cmds = [];
     //assume starting from (0,0) and looking up
-    direction = FD;
+    direction = RT;
     i=0;
     while (i<p.length-1){
         var diff = [p[i+1].x - p[i].x, p[i+1].y - p[i].y];
@@ -323,11 +307,3 @@ function pathtoCommands(p){
     }
     return(cmds);
 }
-
-
-
-
-
-
-
-

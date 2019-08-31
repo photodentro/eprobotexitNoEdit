@@ -324,12 +324,6 @@ function animationSi(startPos,endPos,hor){
           ge('eprobot').style.marginTop = sformat("{}em",endPos);
         }
         clearInterval(inter);
-        if (act.position[0] == act.exit[0] && act.position[1] == act.exit[1]){
-          setAnimation('exit','success','2s');
-          setTimeout(function(){setAnimation('exit','reset','0s'); stop();},2100);
-          /*setTimeout(onMenuNext,2000);*/
-        }
-        else{
           if (act.cmdExec < act.program.length){
             act.cmdExec += 1
             if (!act.pause){
@@ -342,7 +336,6 @@ function animationSi(startPos,endPos,hor){
             act.outofplace = true;
           }
         }
-      }
       else{
         if (hor){
           ge('eprobot').style.marginLeft = sformat("{}em",startPos + i*diff);
@@ -450,7 +443,7 @@ function nextCommand(){
       clearTrace();
       act.cmdExec = 0;
       act.position = [0,4];
-      act.orientation = FD;
+      act.orientation = RT;
       act.outofplace = false;
     }
     setSquare();
@@ -504,7 +497,7 @@ function nextCommand(){
 function restart(){
     act.program = [];
     act.position = [0,4];
-    act.orientation = FD;
+    act.orientation = RT;
     act.cmdExec = 0;
     act.play = false;//play means that the program is executed but may be it is pause
     act.pause = false;
@@ -515,11 +508,14 @@ function restart(){
     setSquare();
     deleteProgram();
     highlightCommand(-1);//-1 means none
+    clearInterval(inter);
+    clearInterval(inter1);
+    clearInterval(inter2);
 }
 
 function stop(){
   act.position = [0,4];
-  act.orientation = FD;
+  act.orientation = RT;
   act.cmdExec = 0;
   act.play = false;//play means that the program is executed but may be it is paused
   act.pause = false;
@@ -536,8 +532,11 @@ function stop(){
 function runFast(currentCommand){
   if (!act.play || (act.play && act.pause)){
     clearTrace();
+    clearInterval(inter);
+    clearInterval(inter1);
+    clearInterval(inter2);
     act.position = [0,4];
-    act.orientation = FD;
+    act.orientation = RT;
     for (i=0; i<=currentCommand; i++){
       startpoint = positionToCanvas(act.position);
       switch (act.program[i]){
@@ -574,25 +573,6 @@ function runFast(currentCommand){
   }
 }
 
-function initLevel(){
-    ge('level').innerHTML = act.level + 1;
-    setAnimation('exit','reset','0s');
-    newLevel(act.level);
-    act.position = [0,4];
-    act.orientation = FD;
-    setSquare();
-    setOrientation();
-    deleteProgram();
-    highlightCommand(-1);
-    act.play = false;
-  }
-
-
-function onMenuNext(){
-    act.level = (act.level+1)%6;
-    initLevel();
-  };
-
 function clearTrace(){
     drawMazeonCanvas();
 }
@@ -622,14 +602,6 @@ function init(){
   document.body.onresize = onResize;
   ge('bar_home').onclick = onHome;
   ge('bar_help').onclick = onHelp;
-  ge('bar_next').onclick = onMenuNext;
-
-  ge('bar_previous').onclick = function(){
-    act.level = (act.level+5)%6;
-    initLevel();
-
-  };
-
   ge('help').onclick = onHelpHide;
   ge('bar_about').onclick = onAbout;
   ge('bar_fullscreen').onclick = onFullScreen;
@@ -640,8 +612,7 @@ function init(){
   restart();
 
   newMaze();
-  ge('level').innerHTML = act.level + 1;
-
+  restart();
   bindCommand('cforward',FD);
   bindCommand('cbackward',BK);
   bindCommand('cleft',LT);
@@ -690,11 +661,10 @@ function init(){
     };
   }
 
-  ge('newmaze').addEventListener('click',function(){
-    //canvasDraw();
-    newMaze();
-    ge('level').innerHTML = act.level + 1;
-  });
+  	ge('newmaze').addEventListener('click',function(){
+  		newMaze();
+  		restart();
+  	});
 
     ge('cpencil').addEventListener('click',function(){
       if (!act.play || (act.play && act.pause)){
@@ -716,7 +686,6 @@ function init(){
       }
     });
   act.pencil = false;
-  initLevel();
 }
 
 window.onerror = onError;
