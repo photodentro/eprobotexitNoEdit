@@ -7,16 +7,24 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ρομπότ εδάφους με επεξεργασία προγράμματος: λαβύρινθος</title>
+  <title>Κίνηση ρομπότ σε λαβύρινθο με δυνατότητα διόρθωσης προγράμματος</title>
   <style>
     /* Dummy style for animations */
   </style>
   <link rel="stylesheet" type="text/css" href="activity.css">
-  <script src="maze.js"></script>
+  <script src="maze2.js"></script>
   <script src="activity.js"></script>
+  <script>
+    maze = true;
+    levels = false;
+    DIR = RT;
+  </script>
 </head>
 <body>
-<div id="main">
+<div id="loading">
+  Παρακαλώ περιμένετε
+</div>
+<div id="main" style="display:none">
   <div id = "ui">
   	<div id = "up">
   		<img id="cforward" src="resource/beebot-fd.svg" title="Μπροστά" alt="Μπροστά" />
@@ -227,7 +235,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   <div id="stagebkg">
   </div>
   <div id="stage">
-      <img id="eprobot" src="resource/eprobot.svg">
+      <img id="eprobot" src="resource/ladybug.svg">
   </div>
 
 
@@ -238,7 +246,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <img id="bar_fullscreen" src="resource/bar_fullscreen.svg" alt="Πλήρης οθόνη" title="Πλήρης οθόνη" style="display:none">
   </div>
    </div>
-<div id="help"><div class="dialog">Σχημάτισε το πρόγραμμα με τα μπλε βελάκια και εκτέλεσέ το με το κουμπί εκτέλεσης για να βρει η πασχαλίτσα την έξοδο από τον λαβύρινθο</div>
+<div id="help"><div class="dialog">Σχεδίασε το πρόγραμμα με τα μπλε βελάκια και εκτέλεσέ το με το πλήκτρο εκτέλεσης για να βρει η πασχαλίτσα την έξοδο από τον λαβύρινθο.</div><audio id="audiohelp"><source src="resource/EPRobotExit.mp3" type="audio/mp3"></audio>
 </div>
 
 
