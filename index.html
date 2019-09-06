@@ -7,16 +7,24 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ρομπότ εδάφους με επεξεργασία προγράμματος: λαβύρινθος</title>
+  <title>Κίνηση ρομπότ σε λαβύρινθο χωρίς δυνατότητα διόρθωσης προγράμματος</title>
   <style>
     /* Dummy style for animations */
   </style>
   <link rel="stylesheet" type="text/css" href="activity.css">
-  <script src="maze.js"></script>
+  <script src="maze2.js"></script>
   <script src="activity.js"></script>
+  <script>
+    maze = true;
+    levels = false;
+    DIR = RT;
+  </script>
 </head>
 <body>
-<div id="main">
+<div id="loading">
+  Παρακαλώ περιμένετε
+</div>
+<div id="main" style="display:none">
   <div id = "ui">
   	<div id = "up">
   		<img id="cforward" src="resource/beebot-fd.svg" title="Μπροστά" alt="Μπροστά" />
@@ -34,7 +42,6 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <img class="progButtons" id="cgo" src="resource/beebot-go.svg" title="Εκτέλεση" alt="Εκτέλεση"/>
       <img class="progButtons" id="cpause" src="resource/beebot-pa.svg" title="Παύση" alt="Παύση"/>
       <img class="progButtons" id="cstop" src="resource/beebot-st.svg" title="Στοπ" alt="Στοπ"/>
-      <img class="progButtons" id="cdelete1" src="resource/beebot-de1.svg" title="Διαγραφή επιλεγμένης εντολής" alt="Διαγραφή επιλεγμένης εντολής">
       <img class="progButtons" id="cdelete" src="resource/beebot-de.svg" title="Διαγραφή εντολών" alt="Διαγραφή εντολών"/>
       
     </div>
@@ -227,7 +234,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   <div id="stagebkg">
   </div>
   <div id="stage">
-      <img id="eprobot" src="resource/eprobot.svg">
+      <img id="eprobot" src="resource/ladybug.svg">
   </div>
 
 
@@ -238,7 +245,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <img id="bar_fullscreen" src="resource/bar_fullscreen.svg" alt="Πλήρης οθόνη" title="Πλήρης οθόνη" style="display:none">
   </div>
    </div>
-<div id="help"><div class="dialog">Σχημάτισε το πρόγραμμα με τα μπλε βελάκια και εκτέλεσέ το με το κουμπί εκτέλεσης για να βρει η πασχαλίτσα την έξοδο από τον λαβύρινθο</div>
+<div id="help"><div class="dialog">Σχεδίασε το πρόγραμμα με τα μπλε βελάκια και εκτέλεσέ το με το πλήκτρο εκτέλεσης για να βρει η πασχαλίτσα την έξοδο από τον λαβύρινθο.</div><audio id="audiohelp"><source src="resource/EPRobotExit.mp3" type="audio/mp3"></audio>
 </div>
 
 
