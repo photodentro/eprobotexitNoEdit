@@ -1,8 +1,6 @@
 mazeColumns = 5;
 mazeRows = 5;
 
-
-
 var g = {maze:[], cmds:[], positions:[]};
 var solved;
 var visited;
@@ -66,38 +64,6 @@ function isPossible(x, y) {
 
 
 
-function drawSquare(squareX,squareY,squareCode){//thanks @alkisg
-    var c = document.getElementById("mycanvas");
-    var ctx = c.getContext("2d");
-    var gWidth = 42.3;//must be the scaling
-    var gHeight = 30;
-    ctx.lineWidth = 0.2;
-    ctx.setLineDash([3]);
-    ctx.beginPath();
-    ctx.strokeRect(squareX,squareY,gWidth,gHeight);
-    ctx.lineWidth = 3;
-    ctx.setLineDash([]);
-    ctx.beginPath();
-    if (squareCode & 1) {
-        ctx.moveTo(squareX,squareY+gHeight);
-        ctx.lineTo(squareX+gWidth,squareY+gHeight);
-    }
-    if (squareCode & 2) {
-        ctx.moveTo(squareX,squareY);
-        ctx.lineTo(squareX,squareY+gHeight);
-    }
-    if (squareCode & 4) {
-        ctx.moveTo(squareX,squareY);
-        ctx.lineTo(squareX+gWidth,squareY);
-    }
-    if (squareCode & 8) {
-        ctx.moveTo(squareX+gWidth,squareY);
-        ctx.lineTo(squareX+gWidth,squareY+gHeight);
-    }
-    ctx.stroke();
-    ctx.closePath();
-}
-
 function generateMaze(x, y) {
     g.maze[getId(x, y)] = g.maze[getId(x, y)] + SET;
     var po = isPossible(x, y);
@@ -130,22 +96,106 @@ function generateMaze(x, y) {
 }
 
 function drawMazeonCanvas(){
-    ge('stage').style.background = "none";
     c = document.getElementById('mycanvas');
     ctx = c.getContext("2d");
-    ctx.clearRect(0,0,c.width,c.height);
-
-    for (var i=1; i<mazeColumns-1; i++)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(42.5,0,c.width-87,c.height);
+    ctx.beginPath();
+    ctx.strokeStyle = '#00000';
+    ctx.lineWidth = 1;
+    ctx.moveTo(42.5,0.5);
+    ctx.lineTo(c.width-44.5,0.5);
+    ctx.moveTo(42.5,c.height-0.5);
+    ctx.lineTo(c.width-44.5,c.height-0.5);
+    ctx.stroke();
+    ctx.closePath();
+    
+    for (var i=0; i<mazeColumns-1; i++)
     {
+        xaxis = (i+1)*42.5+i%2*0.5;
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 0.2;
+        ctx.strokeStyle = 'lightgray';
+        ctx.moveTo(xaxis,0);
+        ctx.lineTo(xaxis,c.height-1)
+        ctx.stroke();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round'
+        ctx.strokeStyle = 'black';
+        inVerLine = false;
         for (var j=0; j<mazeRows; j++){
-            drawSquare(i*42.6,120-j*30,g.maze[getId(i,j)]);
+            /*drawSquare(i*42.6,120-j*30,g.maze[getId(i,j)]);*/
+            
+            if (g.maze[getId(i,j)]&8){
+                if (!inVerLine){
+                    ctx.moveTo(xaxis,120-j*30+30);
+                    inVerLine = true;
+                }
+            }
+            else{
+                if (inVerLine){
+                    ctx.lineTo(xaxis,120-j*30+30)
+                    inVerLine = false;
+                }
+            }
+
         }
+        if (inVerLine){
+            ctx.lineTo(xaxis,120-j*30+30)
+            inVerLine = false;
+        }
+        ctx.stroke();
+        ctx.closePath();
     }
+    
 
+    ctx.beginPath();
+    for (var j=0; j<mazeRows; j++)
+    {
+        yaxis = 120-j*30+0.5+30;
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 0.2;
+        ctx.strokeStyle = 'lightgray';
+        ctx.moveTo(42.5,yaxis);
+        ctx.lineTo(c.width-44,yaxis);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'black';
+        inHorLine = false;
+        for (var i=1; i<mazeColumns-1; i++){
+            if (g.maze[getId(i,j)]&1){
+                if (!inHorLine){
+                    ctx.moveTo(i*42.5,yaxis);
+                    inHorLine = true;
+                }
+            }
+            else{
+                if (inHorLine){
+                    ctx.lineTo(i*42.5,yaxis)
+                    inHorLine = false;
+                }
+            }
 
+        }
+        if (inHorLine){
+            ctx.lineTo(i*42.5,yaxis)
+            inHorLine = false;
+        }
+        ctx.stroke();
+        ctx.closePath();
+
+    }
 }
 
-function newMaze(){
+function newMaze(mazenum){
 	level = 0;
 	act.level  = 0;
     mazeRows = 5;
@@ -157,9 +207,36 @@ function newMaze(){
         for (var id = 0; id < mazeColumns * mazeRows; ++id) {
             g.maze[id] = 15;
         }
-        
+            switch (mazenum){
+        case 0: 
+            // Generate g.maze 
+            generateMaze(Math.floor(Math.random() * mazeColumns),
+                     Math.floor(Math.random() * mazeRows));
+            
+            // Remove set 
+            for (var id = 0; id < mazeColumns * mazeRows; ++id) {
+                g.maze[id] = g.maze[id] ^ SET
+            }
+            break;
+        case 1:
+            g.maze = [7, 5, 5, 5, 9, 3, 5, 9, 11, 10, 6, 9, 6, 12, 10, 11, 10, 7, 5, 8, 6, 4, 5, 5, 12];
+            endY = 2;
+            break;
+        case 2:
+            g.maze = [3, 5, 5, 9, 11, 10, 11, 3, 12, 10, 10, 6, 4, 5, 8, 6, 13, 3, 13, 10, 7, 5, 4, 5, 12];
+            endY = 2;
+            break;
+        case 3:
+            g.maze = [11, 3, 13, 3, 9, 10, 6, 9, 10, 10, 2, 5, 12, 14, 10, 10, 7, 1, 9, 10, 6, 5, 12, 6, 12];
+            endY = 3;
+            break;
+        }    
+
+    
+        console.log(g.maze);
+        /*
         // Generate g.maze 
-        
+		        
         generateMaze(Math.floor(Math.random() * mazeColumns),
                  Math.floor(Math.random() * mazeRows));
         
@@ -167,12 +244,13 @@ function newMaze(){
         for (var id = 0; id < mazeColumns * mazeRows; ++id) {
             g.maze[id] = g.maze[id] ^ SET
         }
-
+		*/
         //add entry point in [0,4]
         g.maze[getId(0,0)] = g.maze[getId(0,0)] ^ WEST;
         //add exit point in [4,endY]
         g.maze[getId(4,endY)] = g.maze[getId(4,endY)] ^ EAST;
 
+        
         /*debug
         g.maze = [3,13,7,5,1,5,9,10,3,5,5,12,11,10,6,12,3,5,5,4,12,3,9,10,3,9,7,9,14,6,4,12,6,5,12];*/
         

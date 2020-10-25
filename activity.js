@@ -255,7 +255,7 @@ function clearTrace(){
   ctx = c.getContext('2d');
   ctx.clearRect(0,0,c.width,c.height);
   if (maze){
-  	drawMazeonCanvas();
+    drawMazeonCanvas();
   }
 }
 
@@ -267,11 +267,15 @@ function trace(startpoint,endpoint){
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.strokeRect(startpoint.x,startpoint.y,endpoint.x-startpoint.x,endpoint.y-startpoint.y);
+    ctx.strokeStyle = 'darkred';
+    ctx.moveTo(startpoint.x,startpoint.y+0.5);
+    ctx.lineTo(endpoint.x,endpoint.y+0.5);
+    
     ctx.stroke();
     ctx.closePath();
   }
 }
+
 
 function moveSteps(curStep,startPos,endPos,steps,hor,draw){
 	//returns true if move is done
@@ -666,15 +670,14 @@ function init(maze,levels){
 
   restart();
   if (maze){
-    newMaze();
-    ge('newmaze').addEventListener('click',function(){
-       newMaze();
-       if (levels){
-       	ge('level').innerHTML = act.level + 1;
-       }
-  });
-
+    newMaze(0);
+    restart();
+    ge('maze0').addEventListener('click',function(){newMaze(0);restart();});
+    ge('maze1').addEventListener('click',function(){newMaze(1);restart();});
+    ge('maze2').addEventListener('click',function(){newMaze(2);restart();});
+    ge('maze3').addEventListener('click',function(){newMaze(3);restart();});
   }
+
 
 
   bindCommand('cforward',FD);
