@@ -101,7 +101,7 @@ function drawMazeonCanvas(){
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(42.5,0,c.width-87,c.height);
     ctx.beginPath();
-    ctx.strokeStyle = '#00000';
+    ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1;
     ctx.moveTo(42.5,0.5);
     ctx.lineTo(c.width-44.5,0.5);
